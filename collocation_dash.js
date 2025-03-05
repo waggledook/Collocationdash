@@ -174,40 +174,95 @@ class CollocationDash {
     }
 
     initUI() {
-        document.body.innerHTML = `
-  <style>
+  document.body.innerHTML = `
+    <style>
       .verb-column.incorrect {
           background-color: #ff4d4d; /* Red flash */
           transition: background-color 0.5s ease;
       }
-      /* Style the feedback element to make it more visible */
+      /* Instructions overlay styles */
+      #instructions-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.8);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+      }
+      #instructions-box {
+          background: #333;
+          padding: 20px;
+          border-radius: 10px;
+          max-width: 500px;
+          text-align: left;
+      }
+      #instructions-box h2 {
+          margin-top: 0;
+      }
+      #close-instructions {
+          margin-top: 15px;
+          padding: 5px 10px;
+          background: #28a745;
+          border: none;
+          border-radius: 5px;
+          color: white;
+          cursor: pointer;
+          transition: 0.3s;
+      }
+      #close-instructions:hover {
+          opacity: 0.8;
+      }
+      /* Feedback styling (optional) */
       #feedback {
-          font-size: 20px;
+          font-size: 18px;
           font-weight: bold;
-          color: #FFD700;           /* Gold color for visibility */
+          color: #FFD700;
           background: rgba(0, 0, 0, 0.7);
           padding: 10px;
           border-radius: 5px;
           margin-top: 10px;
-          min-height: 40px;         /* Reserve space to prevent layout shift */
+          min-height: 40px;
       }
-  </style>
-  <div id="game-container">
+    </style>
+    <!-- Instructions Overlay -->
+    <div id="instructions-overlay">
+      <div id="instructions-box">
+          <h2>How to Play</h2>
+          <p>Welcome to Collocation Dash! Drag the phrase to the correct verb column.</p>
+          <ul>
+              <li>Earn 10 points for a correct match.</li>
+              <li>Lose 5 points for an incorrect match (try again!).</li>
+              <li>The game speeds up as you progress.</li>
+          </ul>
+          <p>Good luck!</p>
+          <button id="close-instructions">Got It!</button>
+      </div>
+    </div>
+    <div id="game-container">
       <h1>Collocation Dash</h1>
-      <div id="verb-columns" class="drop-zone"></div>
-      <div id="draggable-words"></div>
-      <p id="feedback"></p>  <!-- Moved feedback below the words -->
       <p>Round: <span id="round">1</span></p>
       <p>Time left: <span id="timer">25</span>s</p>
       <p>Score: <span id="score">0</span></p>
+      <div id="verb-columns" class="drop-zone"></div>
+      <div id="draggable-words"></div>
+      <p id="feedback"></p> <!-- RE-ADD THIS LINE -->
       <button id="start">Start Game</button>
       <button id="restart" style="display:none;">Restart</button>
-  </div>
-`;
-
-        document.getElementById("start").addEventListener("click", () => this.startGame());
-        document.getElementById("restart").addEventListener("click", () => this.restartGame());
-    }
+    </div>
+  `;
+  
+  document.getElementById("close-instructions").addEventListener("click", () => {
+    const overlay = document.getElementById("instructions-overlay");
+    overlay.parentNode.removeChild(overlay); // remove overlay from the DOM
+  });
+  document.getElementById("start").addEventListener("click", () => this.startGame());
+  document.getElementById("restart").addEventListener("click", () => this.restartGame());
+}
 
     startGame() {
         document.getElementById("start").style.display = "none";
