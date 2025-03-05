@@ -7,13 +7,19 @@
   <style>
     /* Use the Poppins font and a dark gradient background */
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #2E3192, #1BFFFF);
-      color: white;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE10+/Edge */
+    user-select: none;         /* Standard syntax */
+    
+    /* Existing body styles: */
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #2E3192, #1BFFFF);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
     /* Game container with a semi-transparent dark background */
     #game-container {
       max-width: 600px;
