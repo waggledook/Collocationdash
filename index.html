@@ -77,10 +77,9 @@
       opacity: 0.5;
     }
     .verb-column.correct-flash {
-  background-color: #00cc66; /* A green shade for correct feedback */
-  transition: background-color 0.5s ease;
-}
-
+      background-color: #00cc66; /* A green shade for correct feedback */
+      transition: background-color 0.5s ease;
+    }
     /* Button styles */
     button {
       padding: 10px 20px;
@@ -107,20 +106,23 @@
 </head>
 <body>
   <div id="game-container">
-  <h1>Collocation Dash</h1>
-  <p id="feedback"></p>
-  <div id="verb-columns" class="drop-zone"></div>
-  <div id="draggable-words"></div>
-  <p><strong>Round:</strong> <span id="round">1</span></p>
-  <p id="counter">Sentence: 0/15</p>
-  <!-- Points bar container remains -->
-  <div id="points-bar-container">
-    <div id="points-bar"></div>
+    <h1>Collocation Dash</h1>
+    <p id="feedback"></p>
+    <div id="verb-columns" class="drop-zone"></div>
+    <div id="draggable-words"></div>
+    <p><strong>Round:</strong> <span id="round">1</span></p>
+    <p id="counter">Sentence: 0/15</p>
+    <!-- Points bar container remains -->
+    <div id="points-bar-container">
+      <div id="points-bar"></div>
+    </div>
+    <p><strong>Score:</strong> <span id="score">0</span></p>
+    <button id="start">Start Game</button>
+    <button id="restart" style="display:none;">Restart</button>
   </div>
-  <p><strong>Score:</strong> <span id="score">0</span></p>
-  <button id="start">Start Game</button>
-  <button id="restart" style="display:none;">Restart</button>
-</div>
+  <!-- Add the drag-drop-touch library via CDN -->
+  <script src="https://unpkg.com/drag-drop-touch@latest/drag-drop-touch.min.js"></script>
+  <!-- Then load your game script -->
   <script src="collocation_dash.js"></script>
 </body>
 </html>
