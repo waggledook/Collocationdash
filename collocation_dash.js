@@ -312,13 +312,13 @@ class CollocationDash {
     }
 
     dropWord(event) {
+  event.preventDefault(); // Prevent default behavior on drop
+  const dropTarget = event.currentTarget;
   const draggedWord = document.querySelector(".dragging");
   if (!draggedWord) {
     console.error("Drop failed: No word is being dragged.");
     return;
   }
-  // Use event.currentTarget to reliably reference the drop target
-  const dropTarget = event.currentTarget;
   const targetVerb = dropTarget.dataset.verb;
   if (!targetVerb) {
     console.error("Drop failed: Invalid drop target.");
@@ -331,7 +331,7 @@ class CollocationDash {
     draggedWord.remove();
     this.score += 10;
     document.getElementById("score").textContent = this.score;
-
+  
     // Display feedback for a correct answer:
     document.getElementById("feedback").textContent = "Correct!";
     dropTarget.classList.add("correct-flash");
@@ -359,6 +359,7 @@ class CollocationDash {
   draggedWord.classList.remove("dragging");
   this.checkRoundCompletion();
 }
+
 
 
 
