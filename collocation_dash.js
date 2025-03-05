@@ -175,24 +175,36 @@ class CollocationDash {
 
     initUI() {
         document.body.innerHTML = `
-    <style>
-        .verb-column.incorrect {
-            background-color: #ff4d4d; /* Red flash */
-            transition: background-color 0.5s ease;
-        }
-    </style>
-    <div id="game-container">
+  <style>
+      .verb-column.incorrect {
+          background-color: #ff4d4d; /* Red flash */
+          transition: background-color 0.5s ease;
+      }
+      /* Style the feedback element to make it more visible */
+      #feedback {
+          font-size: 20px;
+          font-weight: bold;
+          color: #FFD700;           /* Gold color for visibility */
+          background: rgba(0, 0, 0, 0.7);
+          padding: 10px;
+          border-radius: 5px;
+          margin-top: 10px;
+          min-height: 40px;         /* Reserve space to prevent layout shift */
+      }
+  </style>
+  <div id="game-container">
+      <h1>Collocation Dash</h1>
+      <div id="verb-columns" class="drop-zone"></div>
+      <div id="draggable-words"></div>
+      <p id="feedback"></p>  <!-- Moved feedback below the words -->
+      <p>Round: <span id="round">1</span></p>
+      <p>Time left: <span id="timer">25</span>s</p>
+      <p>Score: <span id="score">0</span></p>
+      <button id="start">Start Game</button>
+      <button id="restart" style="display:none;">Restart</button>
+  </div>
+`;
 
-                <h1>Collocation Dash</h1>
-                <p>Round: <span id="round">1</span></p>
-                <p>Time left: <span id="timer">25</span>s</p>
-                <p>Score: <span id="score">0</span></p>
-                <div id="verb-columns" class="drop-zone"></div>
-                <div id="draggable-words"></div>
-                <button id="start">Start Game</button>
-                <button id="restart" style="display:none;">Restart</button>
-            </div>
-        `;
         document.getElementById("start").addEventListener("click", () => this.startGame());
         document.getElementById("restart").addEventListener("click", () => this.restartGame());
     }
@@ -300,61 +312,72 @@ class CollocationDash {
     }
 
     dropWord(event) {
-    const draggedWord = document.querySelector(".dragging");
-    if (!draggedWord) {
-        console.error("Drop failed: No word is being dragged.");
-        return;
+  const draggedWord = document.querySelector(".dragging");
+  if (!draggedWord) {
+    console.error("Drop failed: No word is being dragged.");
+    return;
+  }
+  // Use event.currentTarget to reliably reference the drop target
+  const dropTarget = event.currentTarget;
+  const targetVerb = dropTarget.dataset.verb;
+  if (!targetVerb) {
+    console.error("Drop failed: Invalid drop target.");
+    return;
+  }
+  const correctVerb = draggedWord.dataset.correctVerb;
+  
+  if (targetVerb === correctVerb) {
+    // Correct drop:
+    draggedWord.remove();
+    this.score += 10;
+    document.getElementById("score").textContent = this.score;
+
+    // Display feedback for a correct answer:
+    document.getElementById("feedback").textContent = "Correct!";
+    dropTarget.classList.add("correct-flash");
+    setTimeout(() => {
+      dropTarget.classList.remove("correct-flash");
+      // Clear the feedback after 1 second:
+      document.getElementById("feedback").textContent = "";
+    }, 1000);
+  } else {
+    // Incorrect drop:
+    dropTarget.classList.add("incorrect");
+    this.score -= 5;
+    document.getElementById("score").textContent = this.score;
+    const phrase = draggedWord.querySelector("strong").textContent.trim();
+    if (!this.wrongAnswers.some(item => item.phrase === phrase)) {
+      this.wrongAnswers.push({ selected: targetVerb, correct: correctVerb, phrase });
     }
-
-    const targetVerb = event.target.dataset.verb;
-    if (!targetVerb) {
-        console.error("Drop failed: Invalid drop target.");
-        return;
-    }
-
-    const correctVerb = draggedWord.dataset.correctVerb;
-
-    if (targetVerb === correctVerb) {
-        draggedWord.remove();
-        this.score += 10; 
-        document.getElementById("score").textContent = this.score;
-    } else {
-        event.target.classList.add("incorrect");
-        this.score -= 5; 
-        document.getElementById("score").textContent = this.score;
-
-        // ✅ Extract only the phrase (ignoring the hint)
-        const phrase = draggedWord.querySelector("strong").textContent.trim();
-
-        this.wrongAnswers.push({ selected: targetVerb, correct: correctVerb, phrase });
-
-        setTimeout(() => {
-            event.target.classList.remove("incorrect");
-        }, 500);
-    }
-
-    draggedWord.classList.remove("dragging");
-
-    this.checkRoundCompletion();
+    document.getElementById("feedback").textContent = "Try again!";
+    setTimeout(() => {
+      dropTarget.classList.remove("incorrect");
+      document.getElementById("feedback").textContent = "";
+    }, 500);
+  }
+  
+  draggedWord.classList.remove("dragging");
+  this.checkRoundCompletion();
 }
+
+
+
 
 
    checkRoundCompletion() {
     const remainingWords = document.querySelectorAll(".draggable-word");
-
+    console.log("Remaining draggable words:", remainingWords.length);  // Debug output
     if (this.roundTime <= 0) {
-        this.endGame();  // 🚨 Stop game if time is up
+        this.endGame();
         return;
     }
-
     if (remainingWords.length === 0) {
-        clearInterval(this.timer); 
+        clearInterval(this.timer);
         this.round++;
         this.roundTime = Math.max(5, this.roundTime - 1);
         this.nextRound();
     }
 }
-
 
 
    endGame() {
